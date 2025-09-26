@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 function ContactsCards() {
@@ -98,6 +98,9 @@ function ContactsCards() {
   const [contacts, setContacts] = useState(initialContacts);
   const [viewMode, setViewMode] = useState("cards");
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const searchInputRef = useRef(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [deleteId,setDeleteId]=useState(null);
   const [form, setForm] = useState({
     name: "",
     company: "",
@@ -144,11 +147,32 @@ function ContactsCards() {
 
   const handleDelete = (id) => {
     setActiveModal(true);
-    console.log(activeModal);
-    /*  alert("Are u sure"); */
-    /*  */
+    setDeleteId(id)
+      
   };
 
+  const confirmDelete=()=>{
+    setContacts(contacts.filter((c) => c.id !== deleteId))
+    setActiveModal(false);
+  }
+
+  useEffect(() => {
+    function handleGlobalKeydown(e) {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    }
+    window.addEventListener("keydown", handleGlobalKeydown);
+    return () => window.removeEventListener("keydown", handleGlobalKeydown);
+  }, []);
+
+  function handleSearchKeyDown(e) {
+    if (e.key === "Enter") {
+      // For now just navigate to contacts with query as example
+      navigate("/contacts", { state: { q: searchQuery } });
+    }
+  }
   const handleSubmit = (e) => {
     e.preventDefault();
     const errors = validateForm();
@@ -205,9 +229,6 @@ function ContactsCards() {
           </h4>
         </div>
         <div className="contacts-toggle-wrap">
-          <button onClick={openAdd} className="contacts-add-btn">
-            + Add Contact
-          </button>
           <div className="contacts-view-toggle">
             <div
               className={`contacts-toggle-slider ${
@@ -236,6 +257,26 @@ function ContactsCards() {
         </div>
       </div>
 
+      <div className="contacts-search-bar">
+        <input
+          ref={searchInputRef}
+          className="nav-search-input"
+          type="text"
+          placeholder="Search (Ctrl+K)"
+          aria-label="Search"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={handleSearchKeyDown}
+        />
+        <div className="nav-contact-btn">
+          <button className="contacts-add-btn"><img className="contact-icons import" src="/import.png" />{" "}  Import</button>
+          <button className="contacts-add-btn"><img className="contact-icons import"  src="/export.png" />{" "} Export</button>
+          <button onClick={openAdd} className="contacts-add-btn">
+            + Add Contact
+          </button>
+        </div>
+      </div>
+
       {activeModal && (
         <div className="contacts-modal-overlay">
           <div role="dialog" aria-modal="true" className="contacts-modal">
@@ -245,7 +286,7 @@ function ContactsCards() {
               </h3>
               <button
                 onClick={() => {
-                  /* setContacts(contacts.filter((c) => c.id !== id)) */ setActiveModal(
+                  /* */ setActiveModal(
                     false
                   );
                 }}
@@ -256,8 +297,8 @@ function ContactsCards() {
               </button>
             </div>
             <div className="modal-btns contacts-form-actions">
-              <button className="contacts-cancel-btn">Cancel</button>
-              <button className="contacts-save-btn">Sure</button>
+              <button className="contacts-cancel-btn"onClick={ ()=>setActiveModal(false)}>Cancel</button>
+              <button className="contacts-save-btn"onClick={confirmDelete}>Sure</button>
             </div>
           </div>
         </div>
@@ -400,21 +441,21 @@ function ContactsCards() {
                     <div className="contacts-card-company">{c.company}</div>
                   </div>
                 </div>
-                <div style={{ display: "flex", gap: 6 }}>
+                <div style={{ display: "flex", gap: 1 }}>
                   <button
                     onClick={() => openEdit(c)}
                     aria-label="Edit"
                     title="Edit"
                     style={{
-                      border: "1px solid #cbd5e1",
-                      background: "#ffffff",
+                      border: "none",
+                      background: "Transparent",
                       color: "#0f172a",
-                      padding: "6px 8px",
+                      padding: "5px",
                       borderRadius: 8,
                       cursor: "pointer",
                     }}
                   >
-                    <FaEdit size={10} />
+                    <img src="/edit.png" />
                   </button>
                   <button
                     onClick={() => handleDelete(c.id)}
@@ -422,7 +463,7 @@ function ContactsCards() {
                     title="Delete"
                     style={{
                       border: "1px solid ",
-                      background: "#ef4444",
+                      background: "Transparent",
                       color: "#ffffff",
                       padding: "6px 8px",
                       borderRadius: 8,
@@ -430,11 +471,12 @@ function ContactsCards() {
                     }}
                   >
                     {" "}
-                    <FaTrash size={10} />
+                    <img src="/Frame.png" size={10} />
                   </button>
                 </div>
               </div>
               <div className="contacts-card-subtext">
+                <img className="contact-icons" src="/email.png" />{" "}
                 <a
                   href={`mailto:${c.email}`}
                   style={{ color: "#2563eb", textDecoration: "none" }}
@@ -443,6 +485,7 @@ function ContactsCards() {
                 </a>
               </div>
               <div className="contacts-card-subtext">
+                <img className="contact-icons" src="/phone.png" />{" "}
                 <a
                   href={`tel:${c.phone}`}
                   style={{ color: "#334155", textDecoration: "none" }}
@@ -451,7 +494,11 @@ function ContactsCards() {
                 </a>
               </div>
               <div className="contacts-card-notes">{c.notes}</div>
-              <div className="contacts-card-date">Added: {c.createdAt}</div>
+              <div className="contacts-card-date">
+                Added: {" "}
+                <img className="contact-icons" src="/calender.png" />{"  "}
+                {c.createdAt}
+              </div>
             </div>
           ))}
         </div>

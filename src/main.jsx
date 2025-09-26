@@ -5,9 +5,9 @@ import { RouterProvider, Navigate, createBrowserRouter } from 'react-router-dom'
 import './index.css'
 import Dashboard from './Components/Dashboard.jsx';
 import Layout from './Components/Layout.jsx'
-import Login from './Components/Login.jsx'
 import ContactsCards from './Components/Contacts.jsx';
 import ComingSoon from './Components/ComingSoon.jsx';
+import HomePage from './Components/HomePage.jsx';
 
 const ProtectedRoute = ({ children }) => {
     const isAuthenticated = sessionStorage.getItem("isAuthenticated") === "true";
@@ -19,7 +19,7 @@ const RootComponent =() =>{
  
        {
           path:'/',
-          element: <Login />,
+          element: <HomePage />,
     
        },
        {

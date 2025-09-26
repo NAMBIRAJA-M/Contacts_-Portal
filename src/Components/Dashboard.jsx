@@ -59,11 +59,11 @@ function Dashboard() {
       <div className="dashboard-container">
         <div className="centre-section">
           <div className="navbar-section">
-           {/*  <div className="nav-left">
+            <div className="nav-left">
               <p className="dash-heading">DashBoard</p>
-            </div> */}
+            </div> 
 
-            <div className="nav-center">
+           {/*  <div className="nav-center">
               <input
                 ref={searchInputRef}
                 className="nav-search-input"
@@ -74,7 +74,9 @@ function Dashboard() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={handleSearchKeyDown}
               />
-            </div>
+            </div> */}
+           
+
             <div className="nav-right">
               <button className="icon-btn" aria-label="Notifications" onClick={() => setNotificationsCount(0)}>
                 <Badge color="error" badgeContent={notificationsCount} overlap="circular">
@@ -149,7 +151,7 @@ function Dashboard() {
                 <div className="timeline-bar-wrap">
                   <span className="timeline-badge late">Late</span>
                   <div className="timeline-bar">
-                    <div className="timeline-progress working" style={{ width: "60%" }}>Working Time</div>
+                    <div className="timeline-progress working" style={{ width: "60%",padding:"0.5rem 2rem" }}>Working Time</div>
                     <div className="timeline-remaining"></div>
                   </div>
                 </div>

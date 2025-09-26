@@ -5,7 +5,7 @@ import React from 'react'
 
 function Layout() {
   return (
-    <div className="dashboard" >
+    <div className="dashboard outlet" >
       <Sidebar />
       <main style={{ flex: 1, padding: "20px", background: "#ffffff" }} className="main-layout-container">
             <Outlet />
