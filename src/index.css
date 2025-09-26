@@ -255,6 +255,7 @@ body{
   padding-right: 2rem;
   margin: 0rem;
   padding: 1rem;
+  padding-top: 0rem;
 
 }
 
@@ -291,6 +292,7 @@ body{
 }
 
 .sidebar-sections {
+  
   padding-top: 1.5rem;
   max-width: 340px;
   width: 300px;
@@ -307,6 +309,7 @@ body{
   transform: translateZ(0);
   /* create a small gap so the toggle never visually overlaps content */
   margin-right: 12px;
+  margin-top: 1rem;
 }
 
 .logout-container{
@@ -860,7 +863,7 @@ body{
   display: flex;
   gap: 2rem;
   background-color: #BCCCDC;
-  position:relative;
+  position:sticky;
   padding: 1rem;
   width: 98%;
   margin-bottom: 2rem;
