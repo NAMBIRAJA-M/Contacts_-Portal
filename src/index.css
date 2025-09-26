@@ -788,6 +788,14 @@
   color: #ffffff;
 }
 
+
+
+.modal-btns{
+    display: flex;
+    padding: 1rem;
+    
+}
+
 /* Modal */
 .contacts-modal-overlay {
   position: fixed;
@@ -888,8 +896,8 @@
 }
 
 .contacts-save-btn {
-  border: 1px solid #0ea5e9;
-  background: #0ea5e9;
+  border: 1px solid #45474b;
+  background: #45474b;
   color: #ffffff;
   padding: 10px 14px;
   border-radius: 10px;

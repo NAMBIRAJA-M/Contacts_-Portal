@@ -98,10 +98,17 @@ function ContactsCards() {
   const [contacts, setContacts] = useState(initialContacts);
   const [viewMode, setViewMode] = useState("cards");
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", company: "", email: "", phone: "", notes: "" });
+  const [form, setForm] = useState({
+    name: "",
+    company: "",
+    email: "",
+    phone: "",
+    notes: "",
+  });
   const [formErrors, setFormErrors] = useState({});
   const [modalMode, setModalMode] = useState("add"); // 'add' | 'edit'
   const [editingId, setEditingId] = useState(null);
+  const [activeModal, setActiveModal] = useState(false);
 
   const validateForm = () => {
     const errors = {};
@@ -136,9 +143,10 @@ function ContactsCards() {
   };
 
   const handleDelete = (id) => {
-    const confirmed = window.confirm("Delete this contact? This cannot be undone.");
-    if (!confirmed) return;
-    setContacts(contacts.filter((c) => c.id !== id));
+    setActiveModal(true);
+    console.log(activeModal);
+    /*  alert("Are u sure"); */
+    /*  */
   };
 
   const handleSubmit = (e) => {
@@ -187,29 +195,40 @@ function ContactsCards() {
     resetForm();
   };
 
-  
-
   return (
     <>
       <div className="contacts-header">
         <div className="contact-heading">
           <h2 style={{ margin: 0 }}>Contacts</h2>
-          <h4 style={{margin:0,color:"#45474b"}}>Store, search, and manage your network in one neat place</h4>
+          <h4 style={{ margin: 0, color: "#45474b" }}>
+            Store, search, and manage your network in one neat place
+          </h4>
         </div>
         <div className="contacts-toggle-wrap">
-          <button
-            onClick={openAdd}
-            className="contacts-add-btn"
-          >
+          <button onClick={openAdd} className="contacts-add-btn">
             + Add Contact
           </button>
           <div className="contacts-view-toggle">
-            <div className={`contacts-toggle-slider ${viewMode === "cards" ? "cards" : "table"}`}></div>
+            <div
+              className={`contacts-toggle-slider ${
+                viewMode === "cards" ? "cards" : "table"
+              }`}
+            ></div>
             <div className="contacts-tabs">
-              <button onClick={() => setViewMode("cards")} className={`contacts-tab-btn ${viewMode === "cards" ? "active" : ""}`}>
+              <button
+                onClick={() => setViewMode("cards")}
+                className={`contacts-tab-btn ${
+                  viewMode === "cards" ? "active" : ""
+                }`}
+              >
                 Cards
               </button>
-              <button onClick={() => setViewMode("table")} className={`contacts-tab-btn ${viewMode === "table" ? "active" : ""}`}>
+              <button
+                onClick={() => setViewMode("table")}
+                className={`contacts-tab-btn ${
+                  viewMode === "table" ? "active" : ""
+                }`}
+              >
                 Table
               </button>
             </div>
@@ -217,13 +236,45 @@ function ContactsCards() {
         </div>
       </div>
 
+      {activeModal && (
+        <div className="contacts-modal-overlay">
+          <div role="dialog" aria-modal="true" className="contacts-modal">
+            <div className="contacts-modal-header">
+              <h3 className="contacts-modal-title">
+                Delete this contact? This cannot be undone.
+              </h3>
+              <button
+                onClick={() => {
+                  /* setContacts(contacts.filter((c) => c.id !== id)) */ setActiveModal(
+                    false
+                  );
+                }}
+                aria-label="Close"
+                className="contacts-close-btn"
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-btns contacts-form-actions">
+              <button className="contacts-cancel-btn">Cancel</button>
+              <button className="contacts-save-btn">Sure</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {isAddOpen && (
         <div className="contacts-modal-overlay">
           <div role="dialog" aria-modal="true" className="contacts-modal">
             <div className="contacts-modal-header">
-              <h3 className="contacts-modal-title">{modalMode === "edit" ? "Edit Contact" : "Add New Contact"}</h3>
+              <h3 className="contacts-modal-title">
+                {modalMode === "edit" ? "Edit Contact" : "Add New Contact"}
+              </h3>
               <button
-                onClick={() => { setIsAddOpen(false); resetForm(); }}
+                onClick={() => {
+                  setIsAddOpen(false);
+                  resetForm();
+                }}
                 aria-label="Close"
                 className="contacts-close-btn"
               >
@@ -249,7 +300,9 @@ function ContactsCards() {
                   <input
                     className="contacts-input"
                     value={form.company}
-                    onChange={(e) => setForm({ ...form, company: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, company: e.target.value })
+                    }
                     placeholder="Acme Inc."
                   />
                 </div>
@@ -259,7 +312,9 @@ function ContactsCards() {
                     type="email"
                     className="contacts-input"
                     value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, email: e.target.value })
+                    }
                     placeholder="jane@example.com"
                   />
                   {formErrors.email && (
@@ -271,7 +326,9 @@ function ContactsCards() {
                   <input
                     className="contacts-input"
                     value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, phone: e.target.value })
+                    }
                     placeholder="+91 90000 00000"
                   />
                 </div>
@@ -289,15 +346,15 @@ function ContactsCards() {
               <div className="contacts-form-actions">
                 <button
                   type="button"
-                  onClick={() => { setIsAddOpen(false); resetForm(); }}
+                  onClick={() => {
+                    setIsAddOpen(false);
+                    resetForm();
+                  }}
                   className="contacts-cancel-btn"
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="contacts-save-btn"
-                >
+                <button type="submit" className="contacts-save-btn">
                   {modalMode === "edit" ? "Update Contact" : "Save Contact"}
                 </button>
               </div>
@@ -310,33 +367,91 @@ function ContactsCards() {
         <div className="contacts-cards-grid">
           {contacts.map((c) => (
             <div key={c.id} className="contacts-card">
-              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "space-between",
+                  gap: 8,
+                }}
+              >
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: "#e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#374151" }}>
-                    {(c.name || "").split(" ").map((p) => p[0]).slice(0,2).join("")}
+                  <div
+                    style={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: "50%",
+                      background: "#e5e7eb",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                      color: "#374151",
+                    }}
+                  >
+                    {(c.name || "")
+                      .split(" ")
+                      .map((p) => p[0])
+                      .slice(0, 2)
+                      .join("")}
                   </div>
                   <div>
-                    <div className="contacts-card-name">
-                      {c.name}
-                    </div>
+                    <div className="contacts-card-name">{c.name}</div>
                     <div className="contacts-card-company">{c.company}</div>
                   </div>
                 </div>
                 <div style={{ display: "flex", gap: 6 }}>
-                  <button onClick={() => openEdit(c)} aria-label="Edit" title="Edit" style={{ border: "1px solid #cbd5e1", background: "#ffffff", color: "#0f172a", padding: "6px 8px", borderRadius: 8, cursor: "pointer" }}><FaEdit size={10} /></button>
-                  <button onClick={() => handleDelete(c.id)} aria-label="Delete" title="Delete" style={{ border: "1px solid ", background: "#ef4444", color: "#ffffff", padding: "6px 8px", borderRadius: 8, cursor: "pointer" }}> <FaTrash size={10} /></button>
+                  <button
+                    onClick={() => openEdit(c)}
+                    aria-label="Edit"
+                    title="Edit"
+                    style={{
+                      border: "1px solid #cbd5e1",
+                      background: "#ffffff",
+                      color: "#0f172a",
+                      padding: "6px 8px",
+                      borderRadius: 8,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <FaEdit size={10} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(c.id)}
+                    aria-label="Delete"
+                    title="Delete"
+                    style={{
+                      border: "1px solid ",
+                      background: "#ef4444",
+                      color: "#ffffff",
+                      padding: "6px 8px",
+                      borderRadius: 8,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {" "}
+                    <FaTrash size={10} />
+                  </button>
                 </div>
               </div>
               <div className="contacts-card-subtext">
-                <a href={`mailto:${c.email}`} style={{ color: "#2563eb", textDecoration: "none" }}>{c.email}</a>
+                <a
+                  href={`mailto:${c.email}`}
+                  style={{ color: "#2563eb", textDecoration: "none" }}
+                >
+                  {c.email}
+                </a>
               </div>
-              <div className="contacts-card-subtext"><a href={`tel:${c.phone}`} style={{ color: "#334155", textDecoration: "none" }}>{c.phone}</a></div>
-              <div className="contacts-card-notes">
-                {c.notes}
+              <div className="contacts-card-subtext">
+                <a
+                  href={`tel:${c.phone}`}
+                  style={{ color: "#334155", textDecoration: "none" }}
+                >
+                  {c.phone}
+                </a>
               </div>
-              <div className="contacts-card-date">
-                Added: {c.createdAt}
-              </div>
+              <div className="contacts-card-notes">{c.notes}</div>
+              <div className="contacts-card-date">Added: {c.createdAt}</div>
             </div>
           ))}
         </div>
@@ -347,54 +462,52 @@ function ContactsCards() {
           <table className="contacts-table">
             <thead>
               <tr>
-                <th>
-                  Name
-                </th>
-                <th>
-                  Company
-                </th>
-                <th>
-                  Email
-                </th>
-                <th>
-                  Phone
-                </th>
-                <th>
-                  Notes
-                </th>
-                <th>
-                  Added
-                </th>
-                <th>
-                  Actions
-                </th>
+                <th>Name</th>
+                <th>Company</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Notes</th>
+                <th>Added</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {contacts.map((c, idx) => (
                 <tr key={c.id}>
-                  <td>
-                    {c.name}
-                  </td>
-                  <td>
-                    {c.company}
-                  </td>
-                  <td>
-                    {c.email}
-                  </td>
-                  <td>
-                    {c.phone}
-                  </td>
-                  <td>
-                    {c.notes}
-                  </td>
-                  <td>
-                    {c.createdAt}
-                  </td>
+                  <td>{c.name}</td>
+                  <td>{c.company}</td>
+                  <td>{c.email}</td>
+                  <td>{c.phone}</td>
+                  <td>{c.notes}</td>
+                  <td>{c.createdAt}</td>
                   <td>
                     <div style={{ display: "flex", gap: 6 }}>
-                      <button onClick={() => openEdit(c)} style={{ border: "1px solid #cbd5e1", background: "#ffffff", color: "#0f172a", padding: "6px 8px", borderRadius: 8, cursor: "pointer" }}>Edit</button>
-                      <button onClick={() => handleDelete(c.id)} style={{ border: "1px solid #ef4444", background: "#ef4444", color: "#ffffff", padding: "6px 8px", borderRadius: 8, cursor: "pointer" }}>Delete</button>
+                      <button
+                        onClick={() => openEdit(c)}
+                        style={{
+                          border: "1px solid #cbd5e1",
+                          background: "#ffffff",
+                          color: "#0f172a",
+                          padding: "6px 8px",
+                          borderRadius: 8,
+                          cursor: "pointer",
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(c.id)}
+                        style={{
+                          border: "1px solid #ef4444",
+                          background: "#ef4444",
+                          color: "#ffffff",
+                          padding: "6px 8px",
+                          borderRadius: 8,
+                          cursor: "pointer",
+                        }}
+                      >
+                        Delete
+                      </button>
                     </div>
                   </td>
                 </tr>
