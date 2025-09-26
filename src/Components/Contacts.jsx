@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
 
 function ContactsCards() {
   const initialContacts = [
@@ -100,7 +99,7 @@ function ContactsCards() {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const searchInputRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [deleteId,setDeleteId]=useState(null);
+  const [deleteId, setDeleteId] = useState(null);
   const [form, setForm] = useState({
     name: "",
     company: "",
@@ -109,9 +108,11 @@ function ContactsCards() {
     notes: "",
   });
   const [formErrors, setFormErrors] = useState({});
-  const [modalMode, setModalMode] = useState("add"); // 'add' | 'edit'
+  const [modalMode, setModalMode] = useState("add");
   const [editingId, setEditingId] = useState(null);
   const [activeModal, setActiveModal] = useState(false);
+  const [filteredCards, setFilteredCards] = useState(null);
+  const [notFound, setNotFound] = useState(false);
 
   const validateForm = () => {
     const errors = {};
@@ -147,14 +148,13 @@ function ContactsCards() {
 
   const handleDelete = (id) => {
     setActiveModal(true);
-    setDeleteId(id)
-      
+    setDeleteId(id);
   };
 
-  const confirmDelete=()=>{
-    setContacts(contacts.filter((c) => c.id !== deleteId))
+  const confirmDelete = () => {
+    setContacts(contacts.filter((c) => c.id !== deleteId));
     setActiveModal(false);
-  }
+  };
 
   useEffect(() => {
     function handleGlobalKeydown(e) {
@@ -168,11 +168,21 @@ function ContactsCards() {
   }, []);
 
   function handleSearchKeyDown(e) {
-    if (e.key === "Enter") {
-      // For now just navigate to contacts with query as example
-      navigate("/contacts", { state: { q: searchQuery } });
-    }
+    
+      const q = searchQuery.trim().toLowerCase();
+      if (!q) {
+        setFilteredCards(null); // show all
+        setNotFound(false);
+        return;
+      }
+      const list = contacts.filter((c) =>
+        (c.name || "").toLowerCase().includes(q)
+      );
+      setFilteredCards(list);
+      setNotFound(list.length === 0);
+    
   }
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const errors = validateForm();
@@ -269,8 +279,12 @@ function ContactsCards() {
           onKeyDown={handleSearchKeyDown}
         />
         <div className="nav-contact-btn">
-          <button className="contacts-add-btn"><img className="contact-icons import" src="/import.png" />{" "}  Import</button>
-          <button className="contacts-add-btn"><img className="contact-icons import"  src="/export.png" />{" "} Export</button>
+          <button className="contacts-add-btn">
+            <img className="contact-icons import" src="/import.png" /> Import
+          </button>
+          <button className="contacts-add-btn">
+            <img className="contact-icons import" src="/export.png" /> Export
+          </button>
           <button onClick={openAdd} className="contacts-add-btn">
             + Add Contact
           </button>
@@ -286,9 +300,7 @@ function ContactsCards() {
               </h3>
               <button
                 onClick={() => {
-                  /* */ setActiveModal(
-                    false
-                  );
+                  /* */ setActiveModal(false);
                 }}
                 aria-label="Close"
                 className="contacts-close-btn"
@@ -297,8 +309,15 @@ function ContactsCards() {
               </button>
             </div>
             <div className="modal-btns contacts-form-actions">
-              <button className="contacts-cancel-btn"onClick={ ()=>setActiveModal(false)}>Cancel</button>
-              <button className="contacts-save-btn"onClick={confirmDelete}>Sure</button>
+              <button
+                className="contacts-cancel-btn"
+                onClick={() => setActiveModal(false)}
+              >
+                Cancel
+              </button>
+              <button className="contacts-save-btn" onClick={confirmDelete}>
+                Sure
+              </button>
             </div>
           </div>
         </div>
@@ -406,7 +425,10 @@ function ContactsCards() {
 
       {viewMode === "cards" && (
         <div className="contacts-cards-grid">
-          {contacts.map((c) => (
+         {((filteredCards ?? contacts).length === 0) ? (
+      <div className="contacts-empty">Not available</div>
+    ) : (
+      (filteredCards ?? contacts).map((c) => (
             <div key={c.id} className="contacts-card">
               <div
                 style={{
@@ -495,12 +517,13 @@ function ContactsCards() {
               </div>
               <div className="contacts-card-notes">{c.notes}</div>
               <div className="contacts-card-date">
-                Added: {" "}
-                <img className="contact-icons" src="/calender.png" />{"  "}
+                Added: <img className="contact-icons" src="/calender.png" />
+                {"  "}
                 {c.createdAt}
               </div>
             </div>
-          ))}
+            ))
+          )}
         </div>
       )}
 
@@ -519,7 +542,10 @@ function ContactsCards() {
               </tr>
             </thead>
             <tbody>
-              {contacts.map((c, idx) => (
+            {((filteredCards ?? contacts).length === 0) ? (
+      <div className="contacts-empty">Not available</div>
+    ) : (
+      (filteredCards ?? contacts).map((c) => (
                 <tr key={c.id}>
                   <td>{c.name}</td>
                   <td>{c.company}</td>
@@ -558,7 +584,8 @@ function ContactsCards() {
                     </div>
                   </td>
                 </tr>
-              ))}
+               ))
+              )}
             </tbody>
           </table>
         </div>
