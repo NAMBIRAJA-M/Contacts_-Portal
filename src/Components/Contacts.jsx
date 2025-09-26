@@ -196,7 +196,7 @@ function ContactsCards() {
   };
 
   return (
-    <>
+    <div className="contacts-container">
       <div className="contacts-header">
         <div className="contact-heading">
           <h2 style={{ margin: 0 }}>Contacts</h2>
@@ -516,7 +516,7 @@ function ContactsCards() {
           </table>
         </div>
       )}
-    </>
+    </div>
   );
 }
 
