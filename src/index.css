@@ -460,7 +460,13 @@ body{
 .nav-left { display: flex; align-items: center; gap: .5rem; }
 .nav-center { display: flex; justify-content: center; }
 .nav-right { display: flex; align-items: center; justify-content: flex-end; gap: .5rem; }
-
+.contacts-empty{
+  display: flex;
+  justify-content: center;
+  align-items:center;
+  font-size: 15px;
+  width: 100%;
+}
 .nav-search-input {
   width: min(520px, 90%);
   height: 40px;

@@ -426,7 +426,7 @@ function ContactsCards() {
       {viewMode === "cards" && (
         <div className="contacts-cards-grid">
          {((filteredCards ?? contacts).length === 0) ? (
-      <div className="contacts-empty">Not available</div>
+      <div className="contacts-empty"> Search is not found </div>
     ) : (
       (filteredCards ?? contacts).map((c) => (
             <div key={c.id} className="contacts-card">
@@ -543,7 +543,7 @@ function ContactsCards() {
             </thead>
             <tbody>
             {((filteredCards ?? contacts).length === 0) ? (
-      <div className="contacts-empty">Not available</div>
+      <div className="contacts-empty"> Search Is Not Found 🤷‍♀️</div>
     ) : (
       (filteredCards ?? contacts).map((c) => (
                 <tr key={c.id}>
