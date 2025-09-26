@@ -31,7 +31,14 @@
 .titletext {
   text-align: center;
   margin-bottom: 10px;
-  font-size: 20px;
+  font-size: 35px;
+  font-family: "Dancing Script", cursive;
+  font-optical-sizing: auto;
+  font-weight: 800;
+  text-align: center;
+  color: #05221e;
+  padding-bottom: 0.3rem;
+
 }
 .title {
   position: relative;
@@ -50,10 +57,17 @@
   object-fit: cover;
   object-position: center;
   margin: 0 0 5px 0;
-  margin-bottom: 10px;
   font-size: 22px;
+  box-shadow:0 0 3px 3px #7F8CAA ;
 }
+.login-description{
+    margin: 0;
+    font-size: 15px;
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #4e4c4c;
 
+}
 .tabs {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -130,7 +144,9 @@
   border-radius: 10px;
   cursor: pointer;
 }
-
+.submit:hover{
+    background-color: #2a2a2a;
+}
 .hint {
   margin-top: 10px;
   color: #6b7280;

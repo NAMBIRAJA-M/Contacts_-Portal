@@ -20,8 +20,9 @@ export default function Login() {
   return (
     <div className="auth">
       <div className="card">
-        <img className="title" src="https://png.pngtree.com/png-vector/20220709/ourmid/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_5809521.png" alt="logo" />
+        <img className="title" src="https://img.freepik.com/free-vector/bird-colorful-gradient-design-vector_343694-2506.jpg" alt="logo" />
         <h2 className="titletext">{isLogin ? "Welcome Back" : "Create an account"}</h2>
+        <p className="login-description">Access your contacts portal securely. Manage, organize, and search your network in one place.</p>
 
         <div className="tabs">
           <button type="button" className={`tab ${isLogin ? "active" : ""}`} onClick={() => setMode("login")}>Log in</button>
