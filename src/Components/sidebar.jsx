@@ -37,6 +37,7 @@ function Sidebar() {
   function toggleCollapse() {
     setCollapsed((prev) => !prev);
   }
+
   function handleClick(index) {
     setActive(index);
 

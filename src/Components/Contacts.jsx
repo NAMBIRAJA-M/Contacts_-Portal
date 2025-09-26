@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 function ContactsCards() {
   const initialContacts = [
@@ -99,6 +100,8 @@ function ContactsCards() {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [form, setForm] = useState({ name: "", company: "", email: "", phone: "", notes: "" });
   const [formErrors, setFormErrors] = useState({});
+  const [modalMode, setModalMode] = useState("add"); // 'add' | 'edit'
+  const [editingId, setEditingId] = useState(null);
 
   const validateForm = () => {
     const errors = {};
@@ -112,11 +115,59 @@ function ContactsCards() {
     setFormErrors({});
   };
 
+  const openAdd = () => {
+    setModalMode("add");
+    setEditingId(null);
+    resetForm();
+    setIsAddOpen(true);
+  };
+
+  const openEdit = (contact) => {
+    setModalMode("edit");
+    setEditingId(contact.id);
+    setForm({
+      name: contact.name || "",
+      company: contact.company || "",
+      email: contact.email || "",
+      phone: contact.phone || "",
+      notes: contact.notes || "",
+    });
+    setIsAddOpen(true);
+  };
+
+  const handleDelete = (id) => {
+    const confirmed = window.confirm("Delete this contact? This cannot be undone.");
+    if (!confirmed) return;
+    setContacts(contacts.filter((c) => c.id !== id));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const errors = validateForm();
     setFormErrors(errors);
     if (Object.keys(errors).length > 0) return;
+
+    if (modalMode === "edit" && editingId) {
+      setContacts(
+        contacts.map((c) =>
+          c.id === editingId
+            ? {
+                ...c,
+                name: form.name.trim(),
+                company: form.company.trim(),
+                email: form.email.trim(),
+                phone: form.phone.trim(),
+                notes: form.notes.trim(),
+              }
+            : c
+        )
+      );
+      setIsAddOpen(false);
+      resetForm();
+      setEditingId(null);
+      setModalMode("add");
+      return;
+    }
 
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -147,7 +198,7 @@ function ContactsCards() {
         </div>
         <div className="contacts-toggle-wrap">
           <button
-            onClick={() => setIsAddOpen(true)}
+            onClick={openAdd}
             className="contacts-add-btn"
           >
             + Add Contact
@@ -170,7 +221,7 @@ function ContactsCards() {
         <div className="contacts-modal-overlay">
           <div role="dialog" aria-modal="true" className="contacts-modal">
             <div className="contacts-modal-header">
-              <h3 className="contacts-modal-title">Add New Contact</h3>
+              <h3 className="contacts-modal-title">{modalMode === "edit" ? "Edit Contact" : "Add New Contact"}</h3>
               <button
                 onClick={() => { setIsAddOpen(false); resetForm(); }}
                 aria-label="Close"
@@ -247,7 +298,7 @@ function ContactsCards() {
                   type="submit"
                   className="contacts-save-btn"
                 >
-                  Save Contact
+                  {modalMode === "edit" ? "Update Contact" : "Save Contact"}
                 </button>
               </div>
             </form>
@@ -259,14 +310,27 @@ function ContactsCards() {
         <div className="contacts-cards-grid">
           {contacts.map((c) => (
             <div key={c.id} className="contacts-card">
-              <div className="contacts-card-name">
-                {c.name}
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: "#e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#374151" }}>
+                    {(c.name || "").split(" ").map((p) => p[0]).slice(0,2).join("")}
+                  </div>
+                  <div>
+                    <div className="contacts-card-name">
+                      {c.name}
+                    </div>
+                    <div className="contacts-card-company">{c.company}</div>
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: 6 }}>
+                  <button onClick={() => openEdit(c)} aria-label="Edit" title="Edit" style={{ border: "1px solid #cbd5e1", background: "#ffffff", color: "#0f172a", padding: "6px 8px", borderRadius: 8, cursor: "pointer" }}><FaEdit size={10} /></button>
+                  <button onClick={() => handleDelete(c.id)} aria-label="Delete" title="Delete" style={{ border: "1px solid ", background: "#ef4444", color: "#ffffff", padding: "6px 8px", borderRadius: 8, cursor: "pointer" }}> <FaTrash size={10} /></button>
+                </div>
               </div>
-              <div className="contacts-card-company">{c.company}</div>
               <div className="contacts-card-subtext">
-                {c.email}
+                <a href={`mailto:${c.email}`} style={{ color: "#2563eb", textDecoration: "none" }}>{c.email}</a>
               </div>
-              <div className="contacts-card-subtext">{c.phone}</div>
+              <div className="contacts-card-subtext"><a href={`tel:${c.phone}`} style={{ color: "#334155", textDecoration: "none" }}>{c.phone}</a></div>
               <div className="contacts-card-notes">
                 {c.notes}
               </div>
@@ -301,6 +365,9 @@ function ContactsCards() {
                 <th>
                   Added
                 </th>
+                <th>
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -323,6 +390,12 @@ function ContactsCards() {
                   </td>
                   <td>
                     {c.createdAt}
+                  </td>
+                  <td>
+                    <div style={{ display: "flex", gap: 6 }}>
+                      <button onClick={() => openEdit(c)} style={{ border: "1px solid #cbd5e1", background: "#ffffff", color: "#0f172a", padding: "6px 8px", borderRadius: 8, cursor: "pointer" }}>Edit</button>
+                      <button onClick={() => handleDelete(c.id)} style={{ border: "1px solid #ef4444", background: "#ef4444", color: "#ffffff", padding: "6px 8px", borderRadius: 8, cursor: "pointer" }}>Delete</button>
+                    </div>
                   </td>
                 </tr>
               ))}
